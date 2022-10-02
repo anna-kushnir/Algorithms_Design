@@ -4,19 +4,26 @@
 #include <vector>
 using namespace std;
 
-#define NUM_OF_FILES 8
+constexpr auto NUM_OF_FILES = 8;
 
+// Створення масиву (вектору) назв файлів.
 vector<string> createFileNames(string, int);
+// Пошук номеру найменшого елемента послідовності.
 int findNumOfMin(vector<int>&);
+// Розподіл серій вхідного файлу по m допоміжних файлах (B1, B2, ..., Bm).
 int splitInputFile(vector<string>&, ifstream&);
+// Злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm.
 void mergeAndSplitFiles(vector<string>&, vector<string>&);
-int sortingFiles(vector<string>&, vector<string>&, int num);
+// Почергове злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm і навпаки, поки у B1 або C1 не утвориться одна серія.
+int sortingFiles(vector<string>&, vector<string>&, int);
+// Перетворення бінарного файлу у текстовий.
 void convertBinToText(string, string);
-void deleteFiles(vector<string>);
+// Видалення допоміжних файлів.
+void deleteFiles(vector<string>&);
 
 int main()
 {
-    string path1 = "start_file_0.txt";
+    string path1 = "start_file_1.txt";
     string path2 = "end_file_1.txt";
 
     ifstream file(path1);
@@ -187,7 +194,7 @@ void convertBinToText(string pathBin, string pathTxt)
     bin.close();
 }
 
-void deleteFiles(vector<string> paths)
+void deleteFiles(vector<string>& paths)
 {
     for (int i = 0; i < paths.size(); ++i) {
         remove(paths[i].c_str());

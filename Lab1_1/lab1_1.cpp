@@ -2,20 +2,23 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <ctime>
 using namespace std;
 
 constexpr auto NUM_OF_FILES = 4;
 
+// Сортування збалансованим багатошляховим злиттям.
+int multiwayMerge(string, string);
 // Створення масиву (вектору) назв файлів.
 vector<string> createFileNames(string, int);
 // Пошук номеру найменшого елемента послідовності.
 int findNumOfMin(vector<int>&);
+// Почергове злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm і навпаки, поки у B1 або C1 не утвориться одна серія.
+int alternateMergingOfFiles(vector<string>&, vector<string>&, int);
 // Розподіл серій вхідного файлу по m допоміжних файлах (B1, B2, ..., Bm).
 int splitInputFile(vector<string>&, ifstream&);
 // Злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm.
-void mergeAndSplitFiles(vector<string>&, vector<string>&);
-// Почергове злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm і навпаки, поки у B1 або C1 не утвориться одна серія.
-int sortingFiles(vector<string>&, vector<string>&, int);
+void mergeFiles(vector<string>&, vector<string>&);
 // Перетворення бінарного файлу у текстовий.
 void convertBinToText(string, string);
 // Видалення допоміжних файлів.
@@ -24,8 +27,18 @@ void deleteFiles(vector<string>&);
 int main()
 {
     string path1 = "start_file_2.txt";
-    string path2 = "end_file_2.txt";
+    string path2 = "end_file_3.txt";
+    clock_t start = clock();
+    if (multiwayMerge(path1, path2)) {
+        return 1;
+    }
+    double duration = (clock() - start) / CLOCKS_PER_SEC;
+    cout << "Duration: " << duration << " seconds.\n";
+    return 0;
+}
 
+int multiwayMerge(string path1, string path2)
+{
     ifstream file(path1);
     if (!file.is_open()) {
         return 1;
@@ -35,7 +48,7 @@ int main()
     int num = splitInputFile(pathsB, file);
     file.close();
 
-    int flag = sortingFiles(pathsB, pathsC, num);
+    int flag = alternateMergingOfFiles(pathsB, pathsC, num);
 
     if (flag == 1) {
         convertBinToText(pathsB[0], path2);
@@ -66,6 +79,32 @@ int findNumOfMin(vector<int>& nums)
         }
     }
     return j;
+}
+
+int alternateMergingOfFiles(vector<string>& pathsB, vector<string>& pathsC, int num)
+{
+    int i = 0;
+    while (true) {
+        if (i % 2 == 0) {
+            mergeFiles(pathsB, pathsC);
+            ifstream C(pathsC[0], ios::binary);
+            C.seekg(0, ios::end);
+            if (num * sizeof(int) == C.tellg()) {
+                return 2;
+            }
+            C.close();
+        }
+        else {
+            mergeFiles(pathsC, pathsB);
+            ifstream B(pathsB[0], ios::binary);
+            B.seekg(0, ios::end);
+            if (num * sizeof(int) == B.tellg()) {
+                return 1;
+            }
+            B.close();
+        }
+        i++;
+    }
 }
 
 int splitInputFile(vector<string>& paths, ifstream& file)
@@ -110,7 +149,7 @@ int splitInputFile(vector<string>& paths, ifstream& file)
     return num;
 }
 
-void mergeAndSplitFiles(vector<string>& pathsB, vector<string>& pathsC)
+void mergeFiles(vector<string>& pathsB, vector<string>& pathsC)
 {
     vector<int> nums;
     ifstream
@@ -194,32 +233,6 @@ void mergeAndSplitFiles(vector<string>& pathsB, vector<string>& pathsC)
     C1.close();
     C2.close();
     C3.close();
-}
-
-int sortingFiles(vector<string>& pathsB, vector<string>& pathsC, int num)
-{
-    int i = 0;
-    while (true) {
-        if (i % 2 == 0) {
-            mergeAndSplitFiles(pathsB, pathsC);
-            ifstream C(pathsC[0], ios::binary);
-            C.seekg(0, ios::end);
-            if (num * sizeof(int) == C.tellg()) {
-                return 2;
-            }
-            C.close();
-        }
-        else {
-            mergeAndSplitFiles(pathsC, pathsB);
-            ifstream B(pathsB[0], ios::binary);
-            B.seekg(0, ios::end);
-            if (num * sizeof(int) == B.tellg()) {
-                return 1;
-            }
-            B.close();
-        }
-        i++;
-    }
 }
 
 void convertBinToText(string pathBin, string pathTxt)

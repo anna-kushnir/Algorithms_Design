@@ -26,8 +26,8 @@ void deleteFiles(vector<string>&);
 
 int main()
 {
-    string path1 = "start_file_2.txt";
-    string path2 = "end_file_2.txt";
+    string path1 = "start_file_1.txt";
+    string path2 = "end_file_1.txt";
     clock_t start = clock();
     if (multiwayMerge(path1, path2)) {
         return 1;

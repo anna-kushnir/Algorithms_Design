@@ -1,4 +1,4 @@
-#pragma warning(disable : 4996)
+п»ї#pragma warning(disable : 4996)
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -9,27 +9,27 @@ using namespace std;
 
 constexpr auto NUM_OF_FILES = 16;
 
-// Сортування збалансованим багатошляховим злиттям.
+// РЎРѕСЂС‚СѓРІР°РЅРЅСЏ Р·Р±Р°Р»Р°РЅСЃРѕРІР°РЅРёРј Р±Р°РіР°С‚РѕС€Р»СЏС…РѕРІРёРј Р·Р»РёС‚С‚СЏРј.
 int multiwayMerge(string, string);
-// Створення масиву (вектору) назв файлів.
+// РЎС‚РІРѕСЂРµРЅРЅСЏ РјР°СЃРёРІСѓ (РІРµРєС‚РѕСЂСѓ) РЅР°Р·РІ С„Р°Р№Р»С–РІ.
 vector<string> createFileNames(string);
-// Пошук номеру найменшого елемента послідовності.
+// РџРѕС€СѓРє РЅРѕРјРµСЂСѓ РЅР°Р№РјРµРЅС€РѕРіРѕ РµР»РµРјРµРЅС‚Р° РїРѕСЃР»С–РґРѕРІРЅРѕСЃС‚С–.
 int findNumOfMin(vector<int>&);
-// Почергове злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm і навпаки, поки у B1 або C1 не утвориться одна серія.
+// РџРѕС‡РµСЂРіРѕРІРµ Р·Р»РёС‚С‚СЏ С„Р°Р№Р»С–РІ B1, B2, ..., Bm Сѓ С„Р°Р№Р»Рё C1, C2, ..., Cm С– РЅР°РІРїР°РєРё, РїРѕРєРё Сѓ B1 Р°Р±Рѕ C1 РЅРµ СѓС‚РІРѕСЂРёС‚СЊСЃСЏ РѕРґРЅР° СЃРµСЂС–СЏ.
 int alternateMergingOfFiles(vector<string>&, vector<string>&, int);
-// Розподіл серій вхідного файлу по m допоміжних файлах (B1, B2, ..., Bm).
+// Р РѕР·РїРѕРґС–Р» СЃРµСЂС–Р№ РІС…С–РґРЅРѕРіРѕ С„Р°Р№Р»Сѓ РїРѕ m РґРѕРїРѕРјС–Р¶РЅРёС… С„Р°Р№Р»Р°С… (B1, B2, ..., Bm).
 int splitInputFile(vector<string>&, FILE*);
-// Злиття файлів B1, B2, ..., Bm у файли C1, C2, ..., Cm.
+// Р—Р»РёС‚С‚СЏ С„Р°Р№Р»С–РІ B1, B2, ..., Bm Сѓ С„Р°Р№Р»Рё C1, C2, ..., Cm.
 void mergeFiles(vector<string>&, vector<string>&);
-// Перетворення бінарного файлу у текстовий.
+// РџРµСЂРµС‚РІРѕСЂРµРЅРЅСЏ Р±С–РЅР°СЂРЅРѕРіРѕ С„Р°Р№Р»Сѓ Сѓ С‚РµРєСЃС‚РѕРІРёР№.
 void convertBinToText(string, string);
-// Видалення допоміжних файлів.
+// Р’РёРґР°Р»РµРЅРЅСЏ РґРѕРїРѕРјС–Р¶РЅРёС… С„Р°Р№Р»С–РІ.
 void deleteFiles(vector<string>&);
 
 int main()
 {
-    string path1 = "start_file_2.txt";
-    string path2 = "end_file_2.txt";
+    string path1 = "start_file_0.txt";
+    string path2 = "end_file_0.txt";
     clock_t start = clock();
     if (multiwayMerge(path1, path2)) {
         return 1;

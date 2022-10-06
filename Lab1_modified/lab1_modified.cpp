@@ -1,4 +1,4 @@
-#pragma warning(disable : 4996)
+п»ї#pragma warning(disable : 4996)
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -10,21 +10,21 @@ using namespace std;
 
 constexpr auto MAX_LENTH = 20000000;
 
-// Сортування збалансованим багатошляховим злиттям.
+// РЎРѕСЂС‚СѓРІР°РЅРЅСЏ Р·Р±Р°Р»Р°РЅСЃРѕРІР°РЅРёРј Р±Р°РіР°С‚РѕС€Р»СЏС…РѕРІРёРј Р·Р»РёС‚С‚СЏРј.
 int multiwayMerge(string, string);
-// Розподіл вхідного файлу по допоміжних файлах розміром, що не перевищує 100 Мб.
+// Р РѕР·РїРѕРґС–Р» РІС…С–РґРЅРѕРіРѕ С„Р°Р№Р»Сѓ РїРѕ РґРѕРїРѕРјС–Р¶РЅРёС… С„Р°Р№Р»Р°С… СЂРѕР·РјС–СЂРѕРј, С‰Рѕ РЅРµ РїРµСЂРµРІРёС‰СѓС” 100 РњР±.
 int splitFile(FILE*);
-// Злиття допоміжних файлів у кінцевий файл.
+// Р—Р»РёС‚С‚СЏ РґРѕРїРѕРјС–Р¶РЅРёС… С„Р°Р№Р»С–РІ Сѓ РєС–РЅС†РµРІРёР№ С„Р°Р№Р».
 void mergeFiles(int, FILE*);
-// Видалення допоміжних файлів.
+// Р’РёРґР°Р»РµРЅРЅСЏ РґРѕРїРѕРјС–Р¶РЅРёС… С„Р°Р№Р»С–РІ.
 void deleteFiles(int);
-// Пошук номеру найменшого елемента послідовності.
+// РџРѕС€СѓРє РЅРѕРјРµСЂСѓ РЅР°Р№РјРµРЅС€РѕРіРѕ РµР»РµРјРµРЅС‚Р° РїРѕСЃР»С–РґРѕРІРЅРѕСЃС‚С–.
 int findNumOfMin(vector<int>&);
 
 int main()
 {
-    string path1 = "start_file_5.txt";
-    string path2 = "end_file_5.txt";
+    string path1 = "start_file_2.txt";
+    string path2 = "end_file_2.txt";
     clock_t start = clock();
     if (multiwayMerge(path1, path2)) {
         cout << "Can't open start file!\n";
@@ -54,9 +54,9 @@ int multiwayMerge(string path1, string path2)
 
 int splitFile(FILE* file)
 {
-    int* mas = new int[MAX_LENTH];
     int i, n = 0;
     while (!feof(file)) {
+        int* mas = new int[MAX_LENTH];
         for (i = 0; i < MAX_LENTH; i++) {
             if (feof(file)) {
                 break;
@@ -68,8 +68,8 @@ int splitFile(FILE* file)
         fwrite(mas, sizeof(int), i, B);
         fclose(B);
         n++;
+        delete[] mas;
     }
-    delete[] mas;
     return n;
 }
 

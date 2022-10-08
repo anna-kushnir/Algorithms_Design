@@ -73,22 +73,18 @@ bool multiwayMerge(string path1, string path2)
 int splitFile(FILE* file)
 {
     int n = 0;
-    fseek(file, 0, SEEK_END);
-    long long file_lenth = ftell(file) / sizeof(long long);
-    fseek(file, 0, SEEK_SET);
-    while (ftell(file) / sizeof(long long) < file_lenth) {
-        long long lenth = file_lenth - ftell(file) / sizeof(long long);
-        if (lenth > MAX_LENTH) {
-            lenth = MAX_LENTH;
-        }
-        long long* mas = new long long[lenth];
-        fread(mas, sizeof(long long), lenth, file);
+    while (true) {
+        long long* mas = new long long[MAX_LENTH];
+        long lenth = fread(mas, sizeof(long long), MAX_LENTH, file);
         sort(mas, mas + lenth);
         FILE* B = fopen(("B" + to_string(n) + ".dat").c_str(), "wb");
-        fwrite(mas, sizeof(long long), (long)lenth, B);
+        fwrite(mas, sizeof(long long), lenth, B);
         fclose(B);
         delete[] mas;
         n++;
+        if (lenth < MAX_LENTH) {
+            break;
+        }
     }
     return n;
 }

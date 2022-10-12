@@ -21,29 +21,11 @@ void deleteFiles(int);
 // Пошук номеру найменшого елемента послідовності.
 int findNumOfMin(vector<long long>&);
 
-void generateFile(string path)
-{
-    srand(time(NULL));
-    int lenth = 1000000;
-    long long* mas = new long long[lenth];
-    FILE* file = fopen(path.c_str(), "wb");
-    for (int i = 0; i < 135 * 32; ++i) {
-        for (int j = 0; j < lenth; ++j) {
-            long long num = ((((((rand() - 12000) << 15) + rand()) << 15) + rand()) << 15) + rand();
-            mas[j] = num;
-        }
-        fwrite(mas, sizeof(long long), lenth, file);
-    }
-    delete[] mas;
-    fclose(file);
-}
-
 int main()
 {
-    string path1 = "start_file_6.dat";
-    string path2 = "end_file_6.dat";
+    string path1 = "start_file_1.dat";
+    string path2 = "end_file_1.dat";
     clock_t start = clock();
-    // generateFile(path1);
     if (multiwayMerge(path1, path2)) {
         cout << "Can't open start file!\n";
         return 1;

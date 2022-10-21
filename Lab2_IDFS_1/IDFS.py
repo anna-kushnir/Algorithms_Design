@@ -22,7 +22,7 @@ def IDFS(root: Node):
     while True:
         result = DLS(root, depth)
         if result != None and isAGoalState(result.queens):
-            return result
+            return result, depth
         depth += 1
 
 

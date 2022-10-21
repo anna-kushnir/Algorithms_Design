@@ -1,6 +1,11 @@
 from IDFS import *
+import time
 
-queens = [4, 2, 6, 0, 0, 0, 6, 4]
-root = Node(queens)
-result = IDFS(root)
-print('Solution: ', result.queens)
+if __name__ == "__main__":
+    queens = [0, 6, 3, 3, 5, 0, 4, 0]
+    root = Node(queens)
+    start_time = time.time()
+    result, depth = IDFS(root)
+    print('Time: %s seconds' % (time.time() - start_time))
+    print('Solution: ', result.queens)
+    print('Was found at a depth of', depth)

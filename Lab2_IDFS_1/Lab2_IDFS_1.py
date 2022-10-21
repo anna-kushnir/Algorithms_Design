@@ -1,11 +1,6 @@
+from IDFS import *
 
-
-def isAGoalState(queens):
-    for i in range(8):
-        for j in range(i + 1, 8):
-            if queens[i] == queens[j] or queens[i] == queens[j] + j - i or queens[i] == queens[j] - j + i:
-                return False
-    return True
-
-
-
+queens = [4, 2, 6, 0, 0, 0, 6, 4]
+root = Node(queens)
+result = IDFS(root)
+print('Solution: ', result.queens)

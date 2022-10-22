@@ -17,10 +17,10 @@ def A_star(root: Node):
             return current
         U.append(current)
         for v in expand(current).childs:
-            tentativeScore = current.g + D
-            if v in U and tentativeScore >= v.g:
+            pathCost = current.g + D
+            if v in U and pathCost >= v.g:
                 continue
-            if not v in U or tentativeScore < v.g:
+            if not v in U or pathCost < v.g:
                 current.addChild(v.queens)
                 if not v in Q:
                     Q.insert(v)

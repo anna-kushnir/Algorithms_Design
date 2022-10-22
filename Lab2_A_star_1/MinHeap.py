@@ -1,10 +1,11 @@
 import sys
+from Node import *
 
 class MinHeap:
     def __init__(self, maxsize):
         self.maxsize = maxsize
         self.size = 0
-        self.Heap = [0]*(self.maxsize + 1)
+        self.Heap : list[Node] = [None]*(self.maxsize + 1)
         self.Heap[0] = -1 * sys.maxsize
         self.FRONT = 1
 
@@ -25,22 +26,22 @@ class MinHeap:
 
     def minHeapify(self, pos):
         if not self.isLeaf(pos):
-            if (self.Heap[pos] > self.Heap[self.leftChild(pos)] or 
-               self.Heap[pos] > self.Heap[self.rightChild(pos)]):
-                if self.Heap[self.leftChild(pos)] < self.Heap[self.rightChild(pos)]:
+            if (self.Heap[pos].f > self.Heap[self.leftChild(pos)].f or 
+               self.Heap[pos].f > self.Heap[self.rightChild(pos)].f):
+                if self.Heap[self.leftChild(pos)].f < self.Heap[self.rightChild(pos)].f:
                     self.swap(pos, self.leftChild(pos))
                     self.minHeapify(self.leftChild(pos))
                 else:
                     self.swap(pos, self.rightChild(pos))
                     self.minHeapify(self.rightChild(pos))
-
-    def insert(self, element):
+                    
+    def insert(self, element: Node):
         if self.size >= self.maxsize :
             return
         self.size+= 1
         self.Heap[self.size] = element
         current = self.size
-        while self.Heap[current] < self.Heap[self.parent(current)]:
+        while self.Heap[current].f < self.Heap[self.parent(current)].f:
             self.swap(current, self.parent(current))
             current = self.parent(current)
 
@@ -51,6 +52,11 @@ class MinHeap:
     def remove(self):
         popped = self.Heap[self.FRONT]
         self.Heap[self.FRONT] = self.Heap[self.size]
-        self.size-= 1
+        self.size -= 1
         self.minHeapify(self.FRONT)
         return popped
+
+    def updateMaxsize(self, add):
+        self.maxsize = self.maxsize + add
+        for i in range(add):
+            self.Heap.append(None)

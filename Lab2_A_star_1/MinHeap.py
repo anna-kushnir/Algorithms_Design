@@ -37,7 +37,7 @@ class MinHeap:
                     
     def insert(self, element: Node):
         if self.size >= self.maxsize :
-            return
+            self.updateMaxsize(self.maxsize)
         self.size+= 1
         self.Heap[self.size] = element
         current = self.size

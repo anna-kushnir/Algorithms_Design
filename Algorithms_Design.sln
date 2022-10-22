@@ -15,6 +15,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_IDFS_1", "Lab2_IDFS_1\
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_A_star_1", "Lab2_A_star_1\Lab2_A_star_1.pyproj", "{70F2DB4A-2751-49A3-B7BE-D4C5666FDB44}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_IDFS_2_Test", "Lab2_IDFS_2_Test\Lab2_IDFS_2_Test.pyproj", "{4DF89457-D7A9-470C-A0FE-45E77D741144}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,12 @@ Global
 		{70F2DB4A-2751-49A3-B7BE-D4C5666FDB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70F2DB4A-2751-49A3-B7BE-D4C5666FDB44}.Release|x64.ActiveCfg = Release|Any CPU
 		{70F2DB4A-2751-49A3-B7BE-D4C5666FDB44}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

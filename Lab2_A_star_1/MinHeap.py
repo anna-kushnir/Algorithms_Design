@@ -41,7 +41,7 @@ class MinHeap:
         self.size+= 1
         self.Heap[self.size] = element
         current = self.size
-        while self.Heap[current].f < self.Heap[self.parent(current)].f:
+        while self.parent(current) != 0 and self.Heap[current].f < self.Heap[self.parent(current)].f:
             self.swap(current, self.parent(current))
             current = self.parent(current)
 
@@ -60,3 +60,6 @@ class MinHeap:
         self.maxsize = self.maxsize + add
         for i in range(add):
             self.Heap.append(None)
+
+    def __getitem__(self, pos):
+        return self.Heap[pos]

@@ -1,11 +1,8 @@
 from Node import *
 
-NUM = 8
-B = NUM * (NUM - 1)
-
 def isAGoalState(queens: list):
-    for i in range(8):
-        for j in range(i + 1, 8):
+    for i in range(NUM):
+        for j in range(i + 1, NUM):
             if queens[i] == queens[j] or queens[i] == queens[j] + j - i or queens[i] == queens[j] - j + i:
                 return False
     return True

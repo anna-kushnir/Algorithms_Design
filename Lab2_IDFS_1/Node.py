@@ -1,3 +1,5 @@
+NUM = 8
+
 class Node:
     def __init__(self, queens: list):
         self.queens = queens
@@ -5,8 +7,8 @@ class Node:
 
     def addChild(self, i: int, j: int):
         queens = []
-        for k in range(8):
+        for k in range(NUM):
              queens.append(self.queens[k])
-        queens[i] = (queens[i] + j) % 8
+        queens[i] = (queens[i] + j) % NUM
         self.childs.append(Node(queens))
         return

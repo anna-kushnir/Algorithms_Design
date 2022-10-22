@@ -1,4 +1,5 @@
 NUM = 8
+B = NUM * (NUM - 1)
 D = 1
 
 class Node:

@@ -14,21 +14,21 @@ def expand(node: Node):
 
 def A_star(root: Node):
     global total_num_of_states, iterations
-    U = []
-    Q = MinHeap(B)
-    Q.insert(root)
-    while Q.size != 0:
-        current = Q.remove()
+    closed = []
+    opened = MinHeap(B)
+    opened.insert(root)
+    while opened.size != 0:
+        current = opened.remove()
         if current.h == 0:
-            return current, iterations, total_num_of_states, Q.size + len(U) + 1
-        U.append(current)
-        for v in expand(current).childs:
+            return current, iterations, total_num_of_states, opened.size + len(closed) + 1
+        closed.append(current)
+        for child in expand(current).childs:
             pathCost = current.g + D
-            if v in U and pathCost >= v.g:
+            if child in closed and pathCost >= child.g:
                 continue
-            if not v in U or pathCost < v.g:
-                current.addChild(v.queens)
-                if not v in Q:
-                    Q.insert(v)
+            if not child in closed or pathCost < child.g:
+                current.addChild(child.queens)
+                if not child in opened:
+                    opened.insert(child)
         iterations += 1
-    return None, iterations, total_num_of_states, Q.size + len(U) + 1
+    return None, iterations, total_num_of_states, opened.size + len(closed) + 1

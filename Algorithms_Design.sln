@@ -17,6 +17,8 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_A_star_1", "Lab2_A_sta
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_IDFS_2_Test", "Lab2_IDFS_2_Test\Lab2_IDFS_2_Test.pyproj", "{4DF89457-D7A9-470C-A0FE-45E77D741144}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Lab2_A_star_2_Test", "Lab2_A_star_2_Test\Lab2_A_star_2_Test.pyproj", "{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,12 @@ Global
 		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|x64.ActiveCfg = Release|Any CPU
 		{4DF89457-D7A9-470C-A0FE-45E77D741144}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0E1F416-4DB0-4C4A-A9C3-9C0C2D56E85C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

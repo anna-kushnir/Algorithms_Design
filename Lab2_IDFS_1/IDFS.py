@@ -22,7 +22,6 @@ def IDFS(root: Node):
             return result, depth
         depth += 1
 
-
 def DLS(node: Node, depth: int):
     if depth == 0 and isAGoalState(node.queens):
         return node

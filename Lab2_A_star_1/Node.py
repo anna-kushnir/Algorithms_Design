@@ -10,10 +10,6 @@ class Node:
         self.g = g
         self.f = self.g + self.h
 
-    def changeG(self, new_g):
-        self.g = new_g
-        self.f = self.g + self.h
-
     def addChildByChangingParent(self, i: int, j: int):
         queens = []
         for k in range(NUM):

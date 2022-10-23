@@ -23,7 +23,7 @@ def IDFS(root: Node):
     while True:
         result = DLS(root, depth)
         if result != None and isAGoalState(result.queens):
-            return result, depth, total_num_of_states, depth * NUM * (NUM - 1)
+            return result, depth, total_num_of_states, depth * NUM * (NUM - 1) + 1
         depth += 1
 
 def DLS(node: Node, depth: int):

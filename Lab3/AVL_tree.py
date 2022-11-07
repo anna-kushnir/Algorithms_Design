@@ -154,9 +154,22 @@ class AVLTree:
 
         if node.parent:
             node.parent.height = max(self.height(node.parent.left), self.height(node.parent.right)) + 1
-            """
-            TODO: DO THIS
-            """
+            self._rebalance_from_parent_to_root(node.parent)
+
+    def _rebalance_from_parent_to_root(self, node: Node):
+        if not node:
+            return
+        if (self.height(node.left) - self.height(node.right)) == 2:
+            if self.height(node.left.left) > self.height(node.left.right):
+                node = self.right_rotate(node)
+            else:
+                node = self.left_right_rotate(node)
+        elif (self.height(node.left) - self.height(node.right)) == -2:
+            if self.height(node.right.right) > self.height(node.right.left):
+                node = self.left_rotate(node)
+            else:
+                node = self.right_left_rotate(node)
+        self._rebalance_from_parent_to_root(node.parent)
 
     def preOrderTraverse(self, node: Node):
         if node is not None:

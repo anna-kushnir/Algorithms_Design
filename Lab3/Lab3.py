@@ -20,7 +20,7 @@ def find_data():
     child_find.resizable(0, 0)
     child_find['bg'] = 'lavender'
     child_find.columnconfigure(0, minsize = 500)
-    lbl = Label(child_find, text = 'Input Key to find:', font = 'Cambria 16', bg = 'lavender')
+    lbl = Label(child_find, text = 'Input Key to Find:', font = 'Cambria 16', bg = 'lavender')
     lbl.grid(row = 0, pady = 20)
 
     lbl_key = Label(child_find, text = 'Key', bg = 'lavender')
@@ -98,7 +98,7 @@ def edit_data():
         frm2.pack_forget()
         frm1.pack()
 
-    lbl1 = Label(frm1, text = 'Input Key to edit:', font = 'Cambria 16', bg = 'lavender')
+    lbl1 = Label(frm1, text = 'Input Key to Edit:', font = 'Cambria 16', bg = 'lavender')
     lbl1.grid(row = 0, columnspan = 2, pady = 20)
 
     lbl_key = Label(frm1, text = 'Key', bg = 'lavender')

@@ -1,11 +1,11 @@
 class Node:
-    def __init__(self, key: int, value: str, parent = None, left = None, right = None):
+    def __init__(self, key: int, value: str, parent = None, left = None, right = None, height = 0):
         self.key = key
         self.value = value
         self.parent = parent
         self.left = left
         self.right = right
-        self.height = 0
+        self.height = height
 
 
 class AVLTree:
@@ -39,7 +39,8 @@ class AVLTree:
 
         temp.parent = node.parent
         node.parent = temp
-        node.left.parent = node
+        if node.left:
+            node.left.parent = node
 
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         temp.height = max(self.height(temp.left), node.height) + 1
@@ -52,7 +53,8 @@ class AVLTree:
 
         temp.parent = node.parent
         node.parent = temp
-        node.right.parent = node
+        if node.right:
+            node.right.parent = node
 
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         temp.height = max(self.height(temp.right), node.height) + 1
@@ -146,7 +148,7 @@ class AVLTree:
             child.parent = node.parent
 
         else:
-            successor = self.find_min(node.right)
+            successor = self._find_min(node.right)
             node.key = successor.key
             node.value = successor.value
             self._delete(successor)

@@ -1,5 +1,10 @@
 from tkinter import *
+import tkinter.messagebox
 from AVL_tree import *
+import pickle
+import os.path
+
+filename = 'database_lab3.bin'
 
 def main_window():
     root.deiconify()
@@ -28,12 +33,21 @@ def find_data():
     ent_key = Entry(child_find, bg = 'lavender blush')
     ent_key.grid(row = 2, padx = 5, pady = 5)
 
-    find_btn = Button(child_find, text = 'Find Data', width = 20, bg = 'lavender blush')
+    def find():
+        key = ent_key.get()
+        node = tree.find(key)
+        if not node:
+            ent_content["text"] = ''
+            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        else:
+            ent_content["text"] = node.value
+
+    find_btn = Button(child_find, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_btn.grid(row = 3, padx = 10, pady = 30)
 
     lbl_content = Label(child_find, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 4, padx = 5)
-    ent_content = Entry(child_find, bg = 'lavender blush', width = 30, state = 'disabled', disabledbackground = 'lavender blush')
+    ent_content = Label(child_find, bg = 'lavender blush', width = 30)
     ent_content.grid(row = 5, padx = 5, pady = 5)
 
     def delete_child():
@@ -64,7 +78,14 @@ def add_data():
     ent_content = Entry(child_add, bg = 'lavender blush', width = 30)
     ent_content.grid(row = 2, column = 1, padx = 5, pady = 5)
 
-    add_btn = Button(child_add, text = 'Add Data', width = 20, bg = 'lavender blush')
+    def add():
+        key = ent_key.get()
+        value = ent_content.get()
+        tree.insert(key, value)
+        ent_key.delete(0, END)
+        ent_content.delete(0, END)
+
+    add_btn = Button(child_add, text = 'Add Data', width = 20, bg = 'lavender blush', command = add)
     add_btn.grid(row = 3, column = 0, columnspan = 2, padx = 10, pady = 30, sticky = "E")
 
     def delete_child():
@@ -84,19 +105,9 @@ def edit_data():
 
     frm1 = Frame(child_edit, bg = 'lavender')
     frm1.columnconfigure([0, 1], minsize = 250)
-
     frm2 = Frame(child_edit, bg = 'lavender')
     frm2.columnconfigure([0, 1], minsize = 250)
-
     frm1.pack()
-
-    def hide_1():
-        frm1.pack_forget()
-        frm2.pack()
-
-    def hide_2():
-        frm2.pack_forget()
-        frm1.pack()
 
     lbl1 = Label(frm1, text = 'Input Key to Edit:', font = 'Cambria 16', bg = 'lavender')
     lbl1.grid(row = 0, columnspan = 2, pady = 20)
@@ -106,8 +117,19 @@ def edit_data():
     ent_key = Entry(frm1, bg = 'lavender blush')
     ent_key.grid(row = 2, columnspan = 2, padx = 5, pady = 5)
 
-    find_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = hide_1)
-    find_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
+    def find():
+        key = ent_key.get()
+        node = tree.find(key)
+        if not node:
+            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        else:
+            frm1.pack_forget()
+            frm2.pack()
+            ent_key_change.insert(0, node.key)
+            ent_content_change.insert(0, node.value)
+
+    find_to_edit_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
+    find_to_edit_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
 
 
     lbl2 = Label(frm2, text = 'Change Key and/or Data:', font = 'Cambria 16', bg = 'lavender')
@@ -123,7 +145,20 @@ def edit_data():
     ent_content_change = Entry(frm2, bg = 'lavender blush', width = 30)
     ent_content_change.grid(row = 2, column = 1, padx = 5, pady = 5)
 
-    edit_btn = Button(frm2, text = 'Edit Data', width = 20, bg = 'lavender blush', command = hide_2)
+    def change():
+        key = ent_key.get()
+        tree.delete(key)
+        new_key = ent_key_change.get()
+        new_value = ent_content_change.get()
+        tree.insert(new_key, new_value)
+
+        ent_key.delete(0, END)
+        ent_key_change.delete(0, END)
+        ent_content_change.delete(0, END)
+        frm2.pack_forget()
+        frm1.pack()
+
+    edit_btn = Button(frm2, text = 'Edit Data', width = 20, bg = 'lavender blush', command = change)
     edit_btn.grid(row = 3, column = 0, columnspan = 2, padx = 10, pady = 30)
 
     def delete_child():
@@ -143,19 +178,9 @@ def delete_data():
 
     frm1 = Frame(child_delete, bg = 'lavender')
     frm1.columnconfigure([0, 1], minsize = 250)
-
     frm2 = Frame(child_delete, bg = 'lavender')
     frm2.columnconfigure([0, 1], minsize = 250)
-
     frm1.pack()
-
-    def hide_1():
-        frm1.pack_forget()
-        frm2.pack()
-
-    def hide_2():
-        frm2.pack_forget()
-        frm1.pack()
 
     lbl1 = Label(frm1, text = 'Input Key to Delete:', font = 'Cambria 16', bg = 'lavender')
     lbl1.grid(row = 0, columnspan = 2, pady = 20)
@@ -165,8 +190,19 @@ def delete_data():
     ent_key = Entry(frm1, bg = 'lavender blush')
     ent_key.grid(row = 2, columnspan = 2, padx = 5, pady = 5)
 
-    find_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = hide_1)
-    find_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
+    def find():
+        key = ent_key.get()
+        node = tree.find(key)
+        if not node:
+            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        else:
+            frm1.pack_forget()
+            frm2.pack()
+            ent_key_delete["text"] = node.key
+            ent_content_delete["text"] = node.value
+
+    find_to_del_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
+    find_to_del_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
 
 
     lbl2 = Label(frm2, text = 'Your Data:', font = 'Cambria 18', bg = 'lavender')
@@ -177,17 +213,33 @@ def delete_data():
     lbl_content = Label(frm2, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 1, column = 1, padx = 5)
 
-    ent_key_change = Entry(frm2, bg = 'lavender blush', state = 'disabled', disabledbackground = 'lavender blush')
-    ent_key_change.grid(row = 2, column = 0, padx = 5, pady = 5)
-    ent_content_change = Entry(frm2, bg = 'lavender blush', width = 30, state = 'disabled', disabledbackground = 'lavender blush')
-    ent_content_change.grid(row = 2, column = 1, padx = 5, pady = 5)
+    ent_key_delete = Label(frm2, bg = 'lavender blush', width = 20)
+    ent_key_delete.grid(row = 2, column = 0, padx = 5, pady = 5)
+    ent_content_delete = Label(frm2, bg = 'lavender blush', width = 30)
+    ent_content_delete.grid(row = 2, column = 1, padx = 5, pady = 5)
 
     lbl3 = Label(frm2, text = 'Are you sure you want to delete?', font = 'Cambria 14', bg = 'lavender')
     lbl3.grid(row = 3, columnspan = 2, pady = 10)
 
-    yes_btn = Button(frm2, text = 'Yes', width = 10, bg = 'lavender blush', command = hide_2)
+    def dont_delete():
+        ent_key.delete(0, END)
+        ent_key_delete["text"] = ''
+        ent_content_delete["text"] = ''
+        frm2.pack_forget()
+        frm1.pack()
+
+    def delete():
+        key = ent_key.get()
+        ent_key.delete(0, END)
+        ent_key_delete["text"] = ''
+        ent_content_delete["text"] = ''
+        tree.delete(key)
+        frm2.pack_forget()
+        frm1.pack()
+
+    yes_btn = Button(frm2, text = 'Yes', width = 10, bg = 'lavender blush', command = delete)
     yes_btn.grid(row = 4, column = 0, padx = 10, pady = 5, sticky = "E")
-    no_btn = Button(frm2, text = 'No', width = 10, bg = 'lavender blush', command = hide_2)
+    no_btn = Button(frm2, text = 'No', width = 10, bg = 'lavender blush', command = dont_delete)
     no_btn.grid(row = 4, column = 1, padx = 10, pady = 5, sticky = "W")
 
     def delete_child():
@@ -195,6 +247,40 @@ def delete_data():
         root.deiconify()
 
     child_delete.protocol("WM_DELETE_WINDOW", delete_child)
+    return
+
+
+def read_file(file, parent: Node = None):
+    if EOFError(file):
+        return None
+    key = pickle.load(file)
+    value = pickle.load(file)
+    height = pickle.load(file)
+    left_child = pickle.load(file)
+    right_child = pickle.load(file)
+    node = Node(key, value, parent, left_child, right_child, height)
+    if left_child:
+        node.left = read_file(file, node)
+    if right_child:
+        node.right = read_file(file, node)
+    return node
+
+def write_file(file, node: Node):
+    if not node:
+        return
+    pickle.dump(node.key, file)
+    pickle.dump(node.value, file)
+    pickle.dump(node.height, file)
+    if node.left:
+        pickle.dump(1, file)
+        write_file(file, node.left)
+    else:
+        pickle.dump(0, file)
+    if node.right:
+        pickle.dump(1, file)
+        write_file(file, node.right)
+    else:
+        pickle.dump(0, file)
     return
 
 if __name__ == "__main__":
@@ -205,4 +291,18 @@ if __name__ == "__main__":
     root['bg'] = 'lavender'
     root.columnconfigure(0, minsize = 400)
     main_window()
+
+    tree = AVLTree()
+    if os.path.isfile(filename):
+        file = open(filename, 'rb')
+        tree.root = read_file(file)
+        file.close()
+
+    def save_tree():
+        file_write = open(filename, 'wb')
+        write_file(file_write, tree.root)
+        file_write.close()
+        root.destroy()
+
+    root.protocol("WM_DELETE_WINDOW", save_tree)
     root.mainloop()

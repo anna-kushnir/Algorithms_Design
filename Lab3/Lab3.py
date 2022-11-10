@@ -4,7 +4,7 @@ from AVL_tree import *
 import pickle
 import os.path
 
-filename = 'database_lab3.bin'
+filename = 'database_lab3.txt'
 
 def main_window():
     root.deiconify()
@@ -16,6 +16,49 @@ def main_window():
     btn_edit.grid(row = 2, sticky = "EW")
     btn_delete = Button(root, text = 'Delete', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = delete_data)
     btn_delete.grid(row = 3, sticky = "EW")
+
+    btn_graphic = Button(root, text = 'Graphic representation\n of keys', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = graphic_representation)
+    btn_graphic.grid(row = 4, sticky = "EW")
+
+def print_tree(node: Node, level: int):
+    st = ''
+    if node:
+        st += print_tree(node.left, level + 1)
+        st += '                    ' * level
+        st += '     ' + str(node.key) + '\n'
+        st += print_tree(node.right, level + 1)
+    return st
+
+def graphic_representation():
+    child_graphic = Toplevel(root)
+    root.withdraw()
+    child_graphic.title('Graphic Representation of Keys')
+    child_graphic.geometry('500x500')
+    child_graphic['bg'] = 'lavender'
+
+    scroll_ver = Scrollbar(child_graphic, orient='vertical')
+    scroll_ver.pack(side = RIGHT, fill = Y)
+    scroll_gor = Scrollbar(child_graphic, orient='horizontal')
+    scroll_gor.pack(side = BOTTOM, fill = X)
+    
+    tree_out = Listbox(child_graphic, height = 500, font = 'Cambria 12', bg = 'lavender', yscrollcommand = scroll_ver.set, xscrollcommand = scroll_gor.set)
+    tree_out.pack(fill = BOTH)
+
+    scroll_ver.config(command = tree_out.yview)
+    scroll_gor.config(command = tree_out.xview)
+    def output_tree():
+        st = ('\n' + print_tree(tree.root, 0)).split('\n')
+        for line in st:
+            tree_out.insert(END, line)
+
+    output_tree()
+
+    def delete_child():
+        child_graphic.destroy()
+        root.deiconify()
+
+    child_graphic.protocol("WM_DELETE_WINDOW", delete_child)
+    return
 
 def find_data():
     child_find = Toplevel(root)
@@ -34,13 +77,17 @@ def find_data():
     ent_key.grid(row = 2, padx = 5, pady = 5)
 
     def find():
-        key = ent_key.get()
-        node = tree.find(key)
-        if not node:
-            ent_content["text"] = ''
-            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        key_str = ent_key.get()
+        if not key_str.isnumeric():
+            tkinter.messagebox.showinfo(title = 'Incorrect Key', message = 'The entered key must be a number.')
         else:
-            ent_content["text"] = node.value
+            key = int(key_str)
+            node = tree.find(key)
+            if not node:
+                ent_content["text"] = ''
+                tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+            else:
+                ent_content["text"] = node.value
 
     find_btn = Button(child_find, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_btn.grid(row = 3, padx = 10, pady = 30)
@@ -79,11 +126,17 @@ def add_data():
     ent_content.grid(row = 2, column = 1, padx = 5, pady = 5)
 
     def add():
-        key = ent_key.get()
-        value = ent_content.get()
-        tree.insert(key, value)
-        ent_key.delete(0, END)
-        ent_content.delete(0, END)
+        key_str = ent_key.get()
+        if not key_str.isnumeric():
+            tkinter.messagebox.showinfo(title = 'Incorrect Key', message = 'The entered key must be a number.')
+        else:
+            key = int(key_str)
+            value = ent_content.get()
+            flag = tree.insert(key, value)
+            if not flag:
+                tkinter.messagebox.showinfo(title = 'Error Adding', message = 'The entered key already exists in the database.')
+            ent_key.delete(0, END)
+            ent_content.delete(0, END)
 
     add_btn = Button(child_add, text = 'Add Data', width = 20, bg = 'lavender blush', command = add)
     add_btn.grid(row = 3, column = 0, columnspan = 2, padx = 10, pady = 30, sticky = "E")
@@ -118,15 +171,19 @@ def edit_data():
     ent_key.grid(row = 2, columnspan = 2, padx = 5, pady = 5)
 
     def find():
-        key = ent_key.get()
-        node = tree.find(key)
-        if not node:
-            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        key_str = ent_key.get()
+        if not key_str.isnumeric():
+            tkinter.messagebox.showinfo(title = 'Incorrect Key', message = 'The entered key must be a number.')
         else:
-            frm1.pack_forget()
-            frm2.pack()
-            ent_key_change.insert(0, node.key)
-            ent_content_change.insert(0, node.value)
+            key = int(key_str)
+            node = tree.find(key)
+            if not node:
+                tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+            else:
+                frm1.pack_forget()
+                frm2.pack()
+                ent_key_change["text"] = node.key
+                ent_content_change.insert(0, node.value)
 
     find_to_edit_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_to_edit_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
@@ -140,26 +197,33 @@ def edit_data():
     lbl_content = Label(frm2, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 1, column = 1, padx = 5)
 
-    ent_key_change = Entry(frm2, bg = 'lavender blush')
+    ent_key_change = Label(frm2, bg = 'lavender blush', width = 20)
     ent_key_change.grid(row = 2, column = 0, padx = 5, pady = 5)
     ent_content_change = Entry(frm2, bg = 'lavender blush', width = 30)
     ent_content_change.grid(row = 2, column = 1, padx = 5, pady = 5)
 
     def change():
-        key = ent_key.get()
-        tree.delete(key)
-        new_key = ent_key_change.get()
+        key = int(ent_key.get())
         new_value = ent_content_change.get()
-        tree.insert(new_key, new_value)
-
+        flag = tree.change(key, new_value)
+        if not flag:
+            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
         ent_key.delete(0, END)
-        ent_key_change.delete(0, END)
+        ent_content_change.delete(0, END)
+        frm2.pack_forget()
+        frm1.pack()
+
+    def cancel():
+        ent_key.delete(0, END)
         ent_content_change.delete(0, END)
         frm2.pack_forget()
         frm1.pack()
 
     edit_btn = Button(frm2, text = 'Edit Data', width = 20, bg = 'lavender blush', command = change)
-    edit_btn.grid(row = 3, column = 0, columnspan = 2, padx = 10, pady = 30)
+    edit_btn.grid(row = 3, column = 0, padx = 10, pady = 30, sticky = "E")
+
+    cancel_btn = Button(frm2, text = 'Cancel', width = 20, bg = 'lavender blush', command = cancel)
+    cancel_btn.grid(row = 3, column = 1, padx = 10, pady = 30, sticky = "W")
 
     def delete_child():
         child_edit.destroy()
@@ -191,15 +255,19 @@ def delete_data():
     ent_key.grid(row = 2, columnspan = 2, padx = 5, pady = 5)
 
     def find():
-        key = ent_key.get()
-        node = tree.find(key)
-        if not node:
-            tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+        key_str = ent_key.get()
+        if not key_str.isnumeric():
+            tkinter.messagebox.showinfo(title = 'Incorrect Key', message = 'The entered key must be a number.')
         else:
-            frm1.pack_forget()
-            frm2.pack()
-            ent_key_delete["text"] = node.key
-            ent_content_delete["text"] = node.value
+            key = int(key_str)
+            node = tree.find(key)
+            if not node:
+                tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
+            else:
+                frm1.pack_forget()
+                frm2.pack()
+                ent_key_delete["text"] = node.key
+                ent_content_delete["text"] = node.value
 
     find_to_del_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_to_del_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
@@ -229,7 +297,7 @@ def delete_data():
         frm1.pack()
 
     def delete():
-        key = ent_key.get()
+        key = int(ent_key.get())
         ent_key.delete(0, END)
         ent_key_delete["text"] = ''
         ent_content_delete["text"] = ''
@@ -251,14 +319,12 @@ def delete_data():
 
 
 def read_file(file, parent: Node = None):
-    if EOFError(file):
-        return None
-    key = pickle.load(file)
-    value = pickle.load(file)
-    height = pickle.load(file)
-    left_child = pickle.load(file)
-    right_child = pickle.load(file)
-    node = Node(key, value, parent, left_child, right_child, height)
+    key = int(file.readline())
+    value = file.readline()[:-1]
+    height = int(file.readline())
+    left_child = int(file.readline())
+    right_child = int(file.readline())
+    node = Node(key, value, parent, None, None, height)
     if left_child:
         node.left = read_file(file, node)
     if right_child:
@@ -268,19 +334,21 @@ def read_file(file, parent: Node = None):
 def write_file(file, node: Node):
     if not node:
         return
-    pickle.dump(node.key, file)
-    pickle.dump(node.value, file)
-    pickle.dump(node.height, file)
+    file.write(str(node.key) + '\n')
+    file.write(str(node.value) + '\n')
+    file.write(str(node.height) + '\n')
     if node.left:
-        pickle.dump(1, file)
-        write_file(file, node.left)
+        file.write('1\n')
     else:
-        pickle.dump(0, file)
+        file.write('0\n')
     if node.right:
-        pickle.dump(1, file)
-        write_file(file, node.right)
+        file.write('1\n')
     else:
-        pickle.dump(0, file)
+        file.write('0\n')
+    if node.left:
+        write_file(file, node.left)
+    if node.right:
+        write_file(file, node.right)
     return
 
 if __name__ == "__main__":
@@ -294,12 +362,12 @@ if __name__ == "__main__":
 
     tree = AVLTree()
     if os.path.isfile(filename):
-        file = open(filename, 'rb')
+        file = open(filename, 'rt')
         tree.root = read_file(file)
         file.close()
 
     def save_tree():
-        file_write = open(filename, 'wb')
+        file_write = open(filename, 'wt')
         write_file(file_write, tree.root)
         file_write.close()
         root.destroy()

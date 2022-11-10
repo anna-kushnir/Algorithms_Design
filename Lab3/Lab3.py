@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter.messagebox
 from AVL_tree import *
-import pickle
 import os.path
 
 filename = 'database_lab3.txt'

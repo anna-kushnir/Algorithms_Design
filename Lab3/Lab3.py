@@ -19,6 +19,29 @@ def main_window():
     btn_graphic = Button(root, text = 'Graphic representation\n of keys', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = graphic_representation)
     btn_graphic.grid(row = 4, sticky = "EW")
 
+def print_tree_norm(node: Node, lst: list, level: int, height: int, flag = True):
+    if flag:
+        if node:
+            if lst[level] == '':
+                lst[level] = str(node.key)
+            else:
+                lst[level] += '          ' * (height - level) + str(node.key)
+            print_tree_norm(node.left, lst, level + 1,  height)
+            print_tree_norm(node.right, lst, level + 1, height)
+        else:
+            if lst[level] == '':
+                lst[level] = ' '
+            else:
+                lst[level] += '          ' * (height - level) + ' '
+            print_tree_norm(None, lst, level + 1,  height, False)
+            print_tree_norm(None, lst, level + 1, height, False)
+    else:
+        if lst[level] == '':
+            lst[level] = ' '
+        else:
+            lst[level] += '          ' * (height - level) + ' '
+
+
 def print_tree(node: Node, level: int):
     st = ''
     if node:
@@ -40,15 +63,18 @@ def graphic_representation():
     scroll_gor = Scrollbar(child_graphic, orient='horizontal')
     scroll_gor.pack(side = BOTTOM, fill = X)
     
-    tree_out = Listbox(child_graphic, height = 500, font = 'Cambria 12', bg = 'lavender', yscrollcommand = scroll_ver.set, xscrollcommand = scroll_gor.set)
-    tree_out.pack(fill = BOTH)
+    out = Frame(child_graphic, bg = 'lavender')
+    out.pack()
 
-    scroll_ver.config(command = tree_out.yview)
-    scroll_gor.config(command = tree_out.xview)
     def output_tree():
-        st = ('\n' + print_tree(tree.root, 0)).split('\n')
-        for line in st:
-            tree_out.insert(END, line)
+        lst = []
+        for i in range (tree.root.height + 3):
+            lst.append('')
+        print_tree_norm(tree.root, lst, 0, tree.root.height + 1)
+        for line in lst:
+            tree_out = Label(out, font = 'Cambria 12', bg = 'lavender')
+            tree_out.pack()
+            tree_out["text"] = line
 
     output_tree()
 

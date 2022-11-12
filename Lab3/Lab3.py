@@ -1,9 +1,12 @@
-from tkinter import *
+﻿from tkinter import *
 import tkinter.messagebox
 from AVL_tree import *
 import os.path
 
 filename = 'database_lab3.txt'
+ch_ver_hor = '  │─'
+ch_udia_hor = '  └─'
+ch_ver_spa = '  │ '
 
 def main_window():
     root.deiconify()
@@ -18,63 +21,57 @@ def main_window():
 
     btn_graphic = Button(root, text = 'Graphic representation\n of keys', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = graphic_representation)
     btn_graphic.grid(row = 4, sticky = "EW")
+    return
 
-def print_tree_norm(node: Node, lst: list, level: int, height: int, flag = True):
-    if flag:
-        if node:
-            if lst[level] == '':
-                lst[level] = str(node.key)
-            else:
-                lst[level] += '          ' * (height - level) + str(node.key)
-            print_tree_norm(node.left, lst, level + 1,  height)
-            print_tree_norm(node.right, lst, level + 1, height)
-        else:
-            if lst[level] == '':
-                lst[level] = ' '
-            else:
-                lst[level] += '          ' * (height - level) + ' '
-            print_tree_norm(None, lst, level + 1,  height, False)
-            print_tree_norm(None, lst, level + 1, height, False)
+
+def print_tree(node: Node, out: str, prefix: str = '', root: bool = True, last: bool = True):
+    out += prefix
+
+    if root:   out += ''
+    elif last: out += ch_udia_hor
+    else:      out += ch_ver_hor
+
+    if node: out += str(node.key) + '\n'
+    else:    out += '\n'
+
+    if not node or (not node.left and not node.right):
+        return out
+
+    if root:   prefix += ''
+    elif last: prefix += '   '
+    else:      prefix += ch_ver_spa
+
+    if node.right:
+        out = print_tree(node.left, out, prefix, False, False)
     else:
-        if lst[level] == '':
-            lst[level] = ' '
-        else:
-            lst[level] += '          ' * (height - level) + ' '
-
-
-def print_tree(node: Node, level: int):
-    st = ''
-    if node:
-        st += print_tree(node.left, level + 1)
-        st += '                    ' * level
-        st += '     ' + str(node.key) + '\n'
-        st += print_tree(node.right, level + 1)
-    return st
+        out = print_tree(node.left, out, prefix, False, True)
+    if node.right:
+        out = print_tree(node.right, out, prefix, False, True)
+    return out
 
 def graphic_representation():
     child_graphic = Toplevel(root)
     root.withdraw()
     child_graphic.title('Graphic Representation of Keys')
-    child_graphic.geometry('500x500')
+    child_graphic.geometry('800x700')
     child_graphic['bg'] = 'lavender'
 
-    scroll_ver = Scrollbar(child_graphic, orient='vertical')
+    out_box = Label(child_graphic, bg = 'lavender')
+    text = Text(out_box, font = 'Cambria 12', bg = 'lavender', relief = FLAT, wrap = NONE)
+
+    scroll_ver = Scrollbar(child_graphic, orient='vertical', command = text.yview)
     scroll_ver.pack(side = RIGHT, fill = Y)
-    scroll_gor = Scrollbar(child_graphic, orient='horizontal')
-    scroll_gor.pack(side = BOTTOM, fill = X)
-    
-    out = Frame(child_graphic, bg = 'lavender')
-    out.pack()
+    scroll_hor = Scrollbar(child_graphic, orient='horizontal', command = text.xview)
+    scroll_hor.pack(side = BOTTOM, fill = X)
+    text.config(yscrollcommand = scroll_ver.set, xscrollcommand = scroll_hor.set)
+    out_box.pack(fill = BOTH, expand = 1)
+    text.pack(fill = BOTH, expand = 1)
 
     def output_tree():
-        lst = []
-        for i in range (tree.root.height + 3):
-            lst.append('')
-        print_tree_norm(tree.root, lst, 0, tree.root.height + 1)
-        for line in lst:
-            tree_out = Label(out, font = 'Cambria 12', bg = 'lavender')
-            tree_out.pack()
-            tree_out["text"] = line
+        out = ''
+        out = print_tree(tree.root, out)
+        text.insert(END, '\n' + out)
+        text.config(state = 'disabled')
 
     output_tree()
 
@@ -384,6 +381,7 @@ if __name__ == "__main__":
     root['bg'] = 'lavender'
     root.columnconfigure(0, minsize = 400)
     main_window()
+
 
     tree = AVLTree()
     if os.path.isfile(filename):

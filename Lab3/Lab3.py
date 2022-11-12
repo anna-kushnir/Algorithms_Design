@@ -53,7 +53,7 @@ def graphic_representation():
     child_graphic = Toplevel(root)
     root.withdraw()
     child_graphic.title('Graphic Representation of Keys')
-    child_graphic.geometry('800x700')
+    child_graphic.geometry('400x700')
     child_graphic['bg'] = 'lavender'
 
     out_box = Label(child_graphic, bg = 'lavender')

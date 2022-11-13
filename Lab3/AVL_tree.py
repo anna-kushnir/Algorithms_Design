@@ -1,4 +1,4 @@
-class Node:
+﻿class Node:
     def __init__(self, key: int, value: str, parent = None, left = None, right = None, height: int = 0):
         self.key = key
         self.value = value
@@ -13,16 +13,14 @@ class AVLTree:
         self.root = None
 
     def find(self, key: int):
-        if not self.root:
-            return None
         return self._find(key, self.root)
 
     def _find(self, key: int, node: Node):
         if not node:
             return None
-        elif key < node.key:
+        if key < node.key:
             return self._find(key, node.left)
-        elif key > node.key:
+        if key > node.key:
             return self._find(key, node.right)
         return node
 
@@ -31,17 +29,14 @@ class AVLTree:
             return -1
         return node.height
 
-
     def _right_rotate(self, node: Node):
         temp = node.left
         node.left = temp.right
         temp.right = node
-
         temp.parent = node.parent
         node.parent = temp
         if node.left:
             node.left.parent = node
-
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         temp.height = max(self.height(temp.left), node.height) + 1
         return temp
@@ -50,12 +45,10 @@ class AVLTree:
         temp = node.right
         node.right = temp.left
         temp.left = node
-
         temp.parent = node.parent
         node.parent = temp
         if node.right:
             node.right.parent = node
-
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         temp.height = max(self.height(temp.right), node.height) + 1
         return temp
@@ -69,11 +62,7 @@ class AVLTree:
         return self._right_rotate(node)
 
     def insert(self, key: int, value):
-        if not self.root:
-            self.root = Node(key, value)
-            flag = True
-        else:
-            self.root, flag = self._insert(key, value, self.root, None)
+        self.root, flag = self._insert(key, value, self.root, None)
         return flag
 
     def _insert(self, key: int, value, node: Node, parent: Node):
@@ -99,30 +88,12 @@ class AVLTree:
         node.height = max(self.height(node.right), self.height(node.left)) + 1
         return node, flag
 
-    def find_min(self):
-        if not self.root:
-            return None
-        return self._find_min(self.root)
-
     def _find_min(self, node: Node):
         if node.left:
             return self._find_min(node.left)
         return node
 
-    def find_max(self):
-        if not self.root:
-            return None
-        return self._find_max(self.root)
-
-    def _find_max(self, node: Node):
-        if node.right:
-            return self._find_max(node.right)
-        return node
-
-
     def delete(self, key: int):
-        if not self.root:
-            return
         if self.find(key):
             self.root = self._delete(key, self.root)
 
@@ -140,15 +111,14 @@ class AVLTree:
                 if node.left:
                     node.left.parent = node.parent
                     return node.left
-                if node.right:
+                else:
                     node.right.parent = node.parent
                     return node.right
-            else:
-                successor = self._find_min(node.right)
-                node.key, successor.key = successor.key, node.key
-                node.value, successor.value = successor.value, node.value
-                node.right = self._delete(successor.key, node.right)
-                return node
+            successor = self._find_min(node.right)
+            node.key, successor.key = successor.key, node.key
+            node.value, successor.value = successor.value, node.value
+            node.right = self._delete(successor.key, node.right)
+            return node
         node.height = max(self.height(node.left), self.height(node.right)) + 1
         return self._rebalance_node(node)
 
@@ -158,7 +128,7 @@ class AVLTree:
                 return self._right_rotate(node)
             else:
                 return self._left_right_rotate(node)
-        elif (self.height(node.left) - self.height(node.right)) == -2:
+        if (self.height(node.left) - self.height(node.right)) == -2:
             if self.height(node.right.right) > self.height(node.right.left):
                 return self._left_rotate(node)
             else:
@@ -181,8 +151,29 @@ class AVLTree:
             flag = True
         return node, flag
 
-    def preOrderTraverse(self, node: Node):
-        if node is not None:
-            print(node.key)
-            self.preOrderTraverse(node.left)
-            self.preOrderTraverse(node.right)
+    def print_tree(self):
+        return self._print_tree(self.root, '')
+
+    def _print_tree(self, node: Node, out: str, prefix: str = '', root: bool = True, last: bool = True):
+        out += prefix
+        if root:   out += ''
+        elif last: out += '  └─'
+        else:      out += '  │─'
+
+        if node: out += str(node.key) + '\n'
+        else:    out += '\n'
+
+        if not node or (not node.left and not node.right):
+            return out
+
+        if root:   prefix += ''
+        elif last: prefix += '   '
+        else:      prefix += '  │ '
+
+        if node.right:
+            out = self._print_tree(node.left, out, prefix, False, False)
+        else:
+            out = self._print_tree(node.left, out, prefix, False, True)
+        if node.right:
+            out = self._print_tree(node.right, out, prefix, False, True)
+        return out

@@ -3,10 +3,7 @@ import tkinter.messagebox
 from AVL_tree import *
 import os.path
 
-filename = 'database_lab3.txt'
-ch_ver_hor = '  │─'
-ch_udia_hor = '  └─'
-ch_ver_spa = '  │ '
+filename = 'database.txt'
 
 def main_window():
     root.deiconify()
@@ -18,68 +15,8 @@ def main_window():
     btn_edit.grid(row = 2, sticky = "EW")
     btn_delete = Button(root, text = 'Delete', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = delete_data)
     btn_delete.grid(row = 3, sticky = "EW")
-
     btn_graphic = Button(root, text = 'Graphic representation\n of keys', font = 'Consolas 16', height = 3, bg = 'lavender blush', command = graphic_representation)
     btn_graphic.grid(row = 4, sticky = "EW")
-    return
-
-
-def print_tree(node: Node, out: str, prefix: str = '', root: bool = True, last: bool = True):
-    out += prefix
-
-    if root:   out += ''
-    elif last: out += ch_udia_hor
-    else:      out += ch_ver_hor
-
-    if node: out += str(node.key) + '\n'
-    else:    out += '\n'
-
-    if not node or (not node.left and not node.right):
-        return out
-
-    if root:   prefix += ''
-    elif last: prefix += '   '
-    else:      prefix += ch_ver_spa
-
-    if node.right:
-        out = print_tree(node.left, out, prefix, False, False)
-    else:
-        out = print_tree(node.left, out, prefix, False, True)
-    if node.right:
-        out = print_tree(node.right, out, prefix, False, True)
-    return out
-
-def graphic_representation():
-    child_graphic = Toplevel(root)
-    root.withdraw()
-    child_graphic.title('Graphic Representation of Keys')
-    child_graphic.geometry('400x700')
-    child_graphic['bg'] = 'lavender'
-
-    out_box = Label(child_graphic, bg = 'lavender')
-    text = Text(out_box, font = 'Cambria 12', bg = 'lavender', relief = FLAT, wrap = NONE)
-
-    scroll_ver = Scrollbar(child_graphic, orient='vertical', command = text.yview)
-    scroll_ver.pack(side = RIGHT, fill = Y)
-    scroll_hor = Scrollbar(child_graphic, orient='horizontal', command = text.xview)
-    scroll_hor.pack(side = BOTTOM, fill = X)
-    text.config(yscrollcommand = scroll_ver.set, xscrollcommand = scroll_hor.set)
-    out_box.pack(fill = BOTH, expand = 1)
-    text.pack(fill = BOTH, expand = 1)
-
-    def output_tree():
-        out = ''
-        out = print_tree(tree.root, out)
-        text.insert(END, '\n' + out)
-        text.config(state = 'disabled')
-
-    output_tree()
-
-    def delete_child():
-        child_graphic.destroy()
-        root.deiconify()
-
-    child_graphic.protocol("WM_DELETE_WINDOW", delete_child)
     return
 
 def find_data():
@@ -90,9 +27,9 @@ def find_data():
     child_find.resizable(0, 0)
     child_find['bg'] = 'lavender'
     child_find.columnconfigure(0, minsize = 500)
+    
     lbl = Label(child_find, text = 'Input Key to Find:', font = 'Cambria 16', bg = 'lavender')
     lbl.grid(row = 0, pady = 20)
-
     lbl_key = Label(child_find, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, padx = 5)
     ent_key = Entry(child_find, bg = 'lavender blush')
@@ -110,6 +47,7 @@ def find_data():
                 tkinter.messagebox.showinfo(title = 'Search Failed', message = 'The entered key was not found in the database.')
             else:
                 ent_content["text"] = node.value
+        return
 
     find_btn = Button(child_find, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_btn.grid(row = 3, padx = 10, pady = 30)
@@ -134,14 +72,13 @@ def add_data():
     child_add.resizable(0, 0)
     child_add['bg'] = 'lavender'
     child_add.columnconfigure([0, 1], minsize = 250)
+    
     lbl = Label(child_add, text = 'Input new Key and Data:', font = 'Cambria 16', bg = 'lavender')
     lbl.grid(row = 0, column = 0, columnspan = 2, pady = 20)
-
     lbl_key = Label(child_add, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, column = 0, padx = 5)
     lbl_content = Label(child_add, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 1, column = 1, padx = 5)
-
     ent_key = Entry(child_add, bg = 'lavender blush')
     ent_key.grid(row = 2, column = 0, padx = 5, pady = 5)
     ent_content = Entry(child_add, bg = 'lavender blush', width = 30)
@@ -159,6 +96,7 @@ def add_data():
                 tkinter.messagebox.showinfo(title = 'Error Adding', message = 'The entered key already exists in the database.')
             ent_key.delete(0, END)
             ent_content.delete(0, END)
+        return
 
     add_btn = Button(child_add, text = 'Add Data', width = 20, bg = 'lavender blush', command = add)
     add_btn.grid(row = 3, column = 0, columnspan = 2, padx = 10, pady = 30, sticky = "E")
@@ -186,7 +124,6 @@ def edit_data():
 
     lbl1 = Label(frm1, text = 'Input Key to Edit:', font = 'Cambria 16', bg = 'lavender')
     lbl1.grid(row = 0, columnspan = 2, pady = 20)
-
     lbl_key = Label(frm1, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, columnspan = 2, padx = 5)
     ent_key = Entry(frm1, bg = 'lavender blush')
@@ -206,19 +143,17 @@ def edit_data():
                 frm2.pack()
                 ent_key_change["text"] = node.key
                 ent_content_change.insert(0, node.value)
+        return
 
     find_to_edit_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_to_edit_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
 
-
     lbl2 = Label(frm2, text = 'Change Key and/or Data:', font = 'Cambria 16', bg = 'lavender')
     lbl2.grid(row = 0, columnspan = 2, pady = 20)
-
     lbl_key = Label(frm2, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, column = 0, padx = 5)
     lbl_content = Label(frm2, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 1, column = 1, padx = 5)
-
     ent_key_change = Label(frm2, bg = 'lavender blush', width = 20)
     ent_key_change.grid(row = 2, column = 0, padx = 5, pady = 5)
     ent_content_change = Entry(frm2, bg = 'lavender blush', width = 30)
@@ -234,16 +169,17 @@ def edit_data():
         ent_content_change.delete(0, END)
         frm2.pack_forget()
         frm1.pack()
+        return
 
     def cancel():
         ent_key.delete(0, END)
         ent_content_change.delete(0, END)
         frm2.pack_forget()
         frm1.pack()
+        return
 
     edit_btn = Button(frm2, text = 'Edit Data', width = 20, bg = 'lavender blush', command = change)
     edit_btn.grid(row = 3, column = 0, padx = 10, pady = 30, sticky = "E")
-
     cancel_btn = Button(frm2, text = 'Cancel', width = 20, bg = 'lavender blush', command = cancel)
     cancel_btn.grid(row = 3, column = 1, padx = 10, pady = 30, sticky = "W")
 
@@ -270,7 +206,6 @@ def delete_data():
 
     lbl1 = Label(frm1, text = 'Input Key to Delete:', font = 'Cambria 16', bg = 'lavender')
     lbl1.grid(row = 0, columnspan = 2, pady = 20)
-
     lbl_key = Label(frm1, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, columnspan = 2, padx = 5)
     ent_key = Entry(frm1, bg = 'lavender blush')
@@ -290,26 +225,21 @@ def delete_data():
                 frm2.pack()
                 ent_key_delete["text"] = node.key
                 ent_content_delete["text"] = node.value
+        return
 
     find_to_del_btn = Button(frm1, text = 'Find Data', width = 20, bg = 'lavender blush', command = find)
     find_to_del_btn.grid(row = 3, columnspan = 2, padx = 10, pady = 30)
 
-
     lbl2 = Label(frm2, text = 'Your Data:', font = 'Cambria 18', bg = 'lavender')
     lbl2.grid(row = 0, columnspan = 2, pady = 20)
-
     lbl_key = Label(frm2, text = 'Key', bg = 'lavender')
     lbl_key.grid(row = 1, column = 0, padx = 5)
     lbl_content = Label(frm2, text = 'Content', bg = 'lavender')
     lbl_content.grid(row = 1, column = 1, padx = 5)
-
     ent_key_delete = Label(frm2, bg = 'lavender blush', width = 20)
     ent_key_delete.grid(row = 2, column = 0, padx = 5, pady = 5)
     ent_content_delete = Label(frm2, bg = 'lavender blush', width = 30)
     ent_content_delete.grid(row = 2, column = 1, padx = 5, pady = 5)
-
-    lbl3 = Label(frm2, text = 'Are you sure you want to delete?', font = 'Cambria 14', bg = 'lavender')
-    lbl3.grid(row = 3, columnspan = 2, pady = 10)
 
     def dont_delete():
         ent_key.delete(0, END)
@@ -317,6 +247,7 @@ def delete_data():
         ent_content_delete["text"] = ''
         frm2.pack_forget()
         frm1.pack()
+        return
 
     def delete():
         key = int(ent_key.get())
@@ -326,7 +257,10 @@ def delete_data():
         tree.delete(key)
         frm2.pack_forget()
         frm1.pack()
+        return
 
+    lbl3 = Label(frm2, text = 'Are you sure you want to delete?', font = 'Cambria 14', bg = 'lavender')
+    lbl3.grid(row = 3, columnspan = 2, pady = 10)
     yes_btn = Button(frm2, text = 'Yes', width = 10, bg = 'lavender blush', command = delete)
     yes_btn.grid(row = 4, column = 0, padx = 10, pady = 5, sticky = "E")
     no_btn = Button(frm2, text = 'No', width = 10, bg = 'lavender blush', command = dont_delete)
@@ -339,6 +273,32 @@ def delete_data():
     child_delete.protocol("WM_DELETE_WINDOW", delete_child)
     return
 
+def graphic_representation():
+    child_graphic = Toplevel(root)
+    root.withdraw()
+    child_graphic.title('Graphic Representation of Keys')
+    child_graphic.geometry('400x700')
+    child_graphic['bg'] = 'lavender'
+
+    out_box = Label(child_graphic, bg = 'lavender')
+    text = Text(out_box, font = 'Cambria 12', bg = 'lavender', relief = FLAT, wrap = NONE)
+    scroll_ver = Scrollbar(child_graphic, orient='vertical', command = text.yview)
+    scroll_ver.pack(side = RIGHT, fill = Y)
+    scroll_hor = Scrollbar(child_graphic, orient='horizontal', command = text.xview)
+    scroll_hor.pack(side = BOTTOM, fill = X)
+    text.config(yscrollcommand = scroll_ver.set, xscrollcommand = scroll_hor.set)
+    out_box.pack(fill = BOTH, expand = 1)
+    text.pack(fill = BOTH, expand = 1)
+    out = tree.print_tree()
+    text.insert(END, '\n' + out)
+    text.config(state = 'disabled')
+
+    def delete_child():
+        child_graphic.destroy()
+        root.deiconify()
+
+    child_graphic.protocol("WM_DELETE_WINDOW", delete_child)
+    return
 
 def read_file(file, parent: Node = None):
     key = int(file.readline())
@@ -347,10 +307,8 @@ def read_file(file, parent: Node = None):
     left_child = int(file.readline())
     right_child = int(file.readline())
     node = Node(key, value, parent, None, None, height)
-    if left_child:
-        node.left = read_file(file, node)
-    if right_child:
-        node.right = read_file(file, node)
+    if left_child:   node.left = read_file(file, node)
+    if right_child:  node.right = read_file(file, node)
     return node
 
 def write_file(file, node: Node):
@@ -359,18 +317,12 @@ def write_file(file, node: Node):
     file.write(str(node.key) + '\n')
     file.write(str(node.value) + '\n')
     file.write(str(node.height) + '\n')
-    if node.left:
-        file.write('1\n')
-    else:
-        file.write('0\n')
-    if node.right:
-        file.write('1\n')
-    else:
-        file.write('0\n')
-    if node.left:
-        write_file(file, node.left)
-    if node.right:
-        write_file(file, node.right)
+    if node.left:  file.write('1\n')
+    else:          file.write('0\n')
+    if node.right: file.write('1\n')
+    else:          file.write('0\n')
+    if node.left:  write_file(file, node.left)
+    if node.right: write_file(file, node.right)
     return
 
 if __name__ == "__main__":
@@ -381,8 +333,6 @@ if __name__ == "__main__":
     root['bg'] = 'lavender'
     root.columnconfigure(0, minsize = 400)
     main_window()
-
-
     tree = AVLTree()
     if os.path.isfile(filename):
         file = open(filename, 'rt')
